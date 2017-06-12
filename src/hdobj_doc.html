@@ -1,0 +1,381 @@
+<html>
+<title>Hierachical Data Object documentation</title>
+<style>
+<!-- style for documentation <<< -->
+html {
+	background-color: #aaaaaa;
+}
+body {
+	color: #000000;
+	background-color: #aaaaaa;
+	font-family: verdana, helvetica, arial;
+	font-size: 10px;
+}
+h3 {
+	text-align: center;
+}
+div.shead {
+	color: #000000;
+	border: 1px solid #555555;
+	font-weight: bold;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding: 5px;
+}
+div.section {
+	color: #000000;
+	background-color: #9999aa;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-bottom: 1px;
+	padding-top: 1px;
+}
+div.codeblock {
+	color: #000000;
+	background-color: #bbbbbb;
+	padding: 5px;
+	border: 1px solid black;
+	margin: 25px;
+	padding: 10px;
+}
+th {
+	background-color: #888888;
+	color: #000000;
+}
+td {
+	font-family: verdana, helvetica, arial;
+	vertical-align: top;
+	font-size: 10px;
+	border: 1px solid #bbbbbb;
+}
+p {
+	text-align: justify;
+}
+</style>
+<!-- >>> -->
+</head>
+<body>
+<h3>Hierachical Data Object documentation</h3>
+<div class="shead">What is this?</div>
+<!--  <<< -->
+<div class="section">
+<p>
+The Hierachical Data Object is just another container for your data, but it's
+a relatively smart way to contain your data. Basically, the object can hold
+any data, with any kind of parent-child relationship, and each child (or it's
+member variables) can have attributes which are useful for handling the data
+contained within them. The nicest thing about the HD Object is that it uses
+XML for a transport -- meaning that not only can you load it from xml, but
+you can also get it to dump out a representation of itself in XML format.
+</p>
+<p>
+The HD Object uses the DOMIT library to acheive this XML transport -- but only
+the xml-related functions are dependant on the DOMIT libraries. You can use
+the HD Object without the XML references if you like. But generally, you want 
+to use the XML functionality.
+</p>
+</div>
+<!-- >>> -->
+<div class="shead">But why?</div>
+<!-- <<< -->
+<div class="section">
+<p>
+I can hear you groaning from there -- why another layer on top of XML? Good
+point. There's nothing at all wrong with the DOMIT libraries -- in fact, they
+are really good. I just wanted to acheive a few goals:
+</p>
+My primary goal was to have a class which handled hierachical data, and
+which had a way of transporting that data, or communicating that data, to 
+another entity that had no concept of the class itself (at least, not in the
+form you see it). Basically, I wanted a way to converse effectively and 
+efficiently between a TCL network application and a PHP script. Both languages
+offer the ability to communicate over TCP/IP, and I just wanted a good 
+transport mechanism for that. Heck, that's one of the instances for which XML
+was designed -- extensible data that describes itself! Isn't that a neat idea?!
+So I set about creating a PHP class that could store and represent the data (in
+XML format) and a mirror-image IncrTCL class that could do the same. The 
+result is a working xml-based transport between a TCL socketed network 
+application and a PHP script. Problem solved!
+</p>
+<p>
+Apart from that, I found that working with my HD Object was a little more
+intutitve than using the XML nodes directly. Well, at least, it is for me. If
+it isn't for you -- I'm sorry. But I did try to take the analogy of a dynamic
+PHP object, to which you can just add member variables, and extend that to
+an object that could hold that data and represent that data in a standardised, 
+yet flexible format to an entity to which it is not directly affiliated. If
+you find the class useful and friendly, then great. If not, shake the dust 
+from your feet and move along.
+</p>
+</div>
+<!-- >>> -->
+<div class="shead">About style and other such things</div>
+<!-- <<< -->
+<div class="section">
+<p>
+	I tend to do just about all of my coding in VIM. Actually, I stick to using
+	the graphical version (GVIM), but sometimes make short trips to the land
+	of the console. My reasons are simple: I need a uniform development 
+	environment on win32 and linux (because I'm forced to use the first, and
+	I love to use the second), and I needed something powerful, yet simple
+	and, quite importantly, free. Not just free as in beer -- free as in
+	licensing. I believe that the days of closed-source applications are
+	over. Commercial apps can still be written: a coder has to eat and feed
+	his wife and all that. But your clients deserve disclosure on the source, 
+	should you be abducted by aliens or something similar. Or even just so they
+	can also hire a hacker to implement features you didn't think of. But
+	enough of that.</p>
+	<p>Also, whilst VIM may give an initially steep learning curve, and
+	seem to contain unnecessary keyboard work, you will find that other
+	editors become annoying after you find the true power in vim. Also, very
+	few other editors are as ready to adapt to the coder's wishes.</p>
+	<p>The point is that you might notice a few commented out &lt;&lt;&lt;'s
+	and corresponding &gt;&gt;&gt;'s. This is not an angle-bracket fetish: it's
+	my choice for fold markers in vim (thanks to a friend) because curly braces
+	cause problems in Tcl (even when commented), and tend to mess up the
+	brace-matching for languages that use braces for code blocks, since
+	vim cannot always tell what is a code brace, and what is a fold brace.
+	You also might notice that I tend to stick to an 80 column line. This can
+	make some sections of deep code a little short on space, but it's something
+	I do as a matter of style (thanks to the same friend). It makes for
+	easier reading on a terminal, and means that the code is more easily
+	available to anyone who has time to waste on it.</p>
+</div>
+<!-- >>> -->
+<div class="shead">Where to begin?</div>
+<!--- <<< -->
+<div class="section">
+<p>
+First, we have to examine some concepts that I was trying to encapsulate with
+the class. In the typical scenario of a class, it has properties and methods. 
+A class that was entirely data would more than likely not have any methods
+to speak of, but just a lot of properties. And, possibly, child structures
+containing data of their own. This is the model I worked on, and the cause
+of the naming that I've used for the methods of the HD Object.
+</p>
+<p>First off, some rules: variables within the HD Object may not be preceeded
+with a double underscore (__) -- I've reserved those kinds of names for
+data internal to the HD Object, in the absence of true scoping of variables 
+in php4. If php4 had the ability to declare variables as private, I would have
+just stuck with that, but I had to adopt a hack rather. When php5 is available
+in a stable format, I will more than likely update to conform to proper
+scoping. In the meantime, at least the following reserved variables should
+not be overwritten unless you know what you're doing:<br>
+$__xml -- holds a string of the xml used to load the object<br>
+$__doc -- reference to the xml document object<br>
+$__root -- reference to the xml document's root element<br>
+$__name -- root element's name (you can set this)<br>
+$__mvars -- container of member variables<br>
+$__childnames -- names of the children this object has<br>
+$__attribs -- attributes on this object<br>
+$__mvarattribs -- attributs on member variables for this object<br>
+Others may be used in the future, so it would be best to just not use
+member variables or children with names starting with __.
+</p>
+<p>On to the good stuff -- we could have gleaned from the information above
+that we access member variables on the object, as we would for an object
+created from a class that we hand-designed ourselves. Member variables can 
+only have one value, and this may seem like a bit of a silly thing to say,
+but we have to realise that an object may have more than one child with the
+same name, since children are kept in an array. This means we can use the 
+HD Object to transport tabular data, eg from a sql query. Neato! But we need
+to have a look at usage to figure this all out...
+</div>
+<!-- >>> -->
+<div class="shead">Usage</div>
+<!-- <<< -->
+<div class="section">
+<p>
+The best way to understand this is to just take a trip through some code. Let's
+instantiate an hdobj:
+<div class="codeblock"><pre>
+$foo = new HDObj();
+</pre></div>
+Note that we could have instantiated with some XML to get an hdobj all loaded 
+up for us automatically. But let's just start with something blank. Now, let's
+add some member variables:
+<div class="codeblock"><pre>
+$foo-&gt;__name="MyFoo";
+$foo-&gt;set_mvar("food", "burger");
+$foo-&gt;set_mvar("color", "red");
+$foo-&gt;set_mvar("bar", "quux");
+$foo-&gt;set_mvar_attrib("bar", "order", 1);
+</pre></div>
+Which would give us a structure represented by the xml:
+<pre>
+&lt;MyFoo&gt;
+	&lt;food&gt;burger&lt;/food&gt;
+	&lt;color&gt;red&lt;/color&gt;
+	&lt;bar order=&quot;1&quot;&gt;quux&lt;/bar&gt;
+&lt;/MyFoo&gt;
+</pre>
+</p>
+<p>
+Neato. How about:
+<div class="codeblock">
+<pre>
+$bar = new HDObj();
+$bar->__name="MyBar";
+$bar-&gt;set_mvar("bar", "Mybar's bar");
+$bar-&gt;set_mvar_attrib("bar", "highlight", "0");
+$foo-&gt;append_child($bar);
+</pre>
+</div>
+which would give us something represented in XML by:
+<pre>
+&lt;MyFoo&gt;
+	&lt;food&gt;burger&lt;/food&gt;
+	&lt;color&gt;red&lt;/color&gt;
+	&lt;bar order=&quot;1&quot;&gt;quux&lt;/bar&gt;
+	&lt;MyBar&gt;
+		&lt;bar highlight=&quot;0&quot;&gt;MyBar's bar&lt;bar&gt;
+	&lt;/MyBar&gt;
+&lt;/MyFoo&gt;
+</pre>
+</p>
+<p>
+To access the child Mybar from $foo, we would simply do, eg:
+<div class="codeblock"><pre>
+	print($foo-&gt;MyBar[0]-&gt;bar);
+</pre></div>
+Some notes about access:
+<ul>
+<li>Children and mvars are accessed by their node names -- as you would expect
+from looking at an xml document, and wanting it to be represented by a data
+object</li>
+<li>Children are always accessed as elements of an array. So you could have
+multiple Row children for a dataset object -- and access the data easily</li>
+<li>The difference between an mvar and a child is simply that an mvar
+contains some information, and a child contains other mvars. That's all there
+is to it.</li>
+</ul>
+</p>
+<p>
+Now, of course, the real cool stuff comes from loading an hdobj with xml data
+and using the data directly from the object, like so:
+<div class="codeblock"><pre>
+$foo = new HDObj(&quot;
+&lt;dataset&gt;
+	&lt;row rownum=&quot;0&quot;>
+		&lt;id type=&quot;int&quot;&gt;14&lt;/id&gt;
+		&lt;name type=&quot;text&quot;&gt;Bob Smith&lt;/name&gt;
+		&lt;birthday type=&quot;date&quot;&gt;1964-08-23&lt;/birthday&gt;
+	&lt;/row&gt;
+	&lt;row rownum=&quot;1&quot;>
+		&lt;id type=&quot;int&quot;&gt;16&lt;/id&gt;
+		&lt;name type=&quot;text&quot;&gt;Ray Fincklestein&lt;/name&gt;
+		&lt;birthday type=&quot;date&quot;&gt;1964-05-15&lt;/birthday&gt;
+	&lt;/row&gt;
+	&lt;row rownum=&quot;0&quot;>
+		&lt;id type=&quot;int&quot;&gt;82&lt;/id&gt;
+		&lt;name type=&quot;text&quot;&gt;Marie Otterburger&lt;/name&gt;
+		&lt;birthday type=&quot;date&quot;&gt;1964-09-01&lt;/birthday&gt;
+	&lt;/row&gt;
+&lt;/dataset&gt;&quot;);
+</pre>
+</div>
+Which may have been the result from a sql query, for instance<br><pre>
+select id, name, birthday from users where birthday &gt; '1964-01-01' and birthday &lt; '1965-01-01';</pre>
+to get a listing of all our users who were born in 1964. The nice part comes when we access that data:
+<div class="codeblock"><pre>
+print(&quot;&lt;table&gt;&lt;thead&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Birthday&lt;/th&gt;&lt;/thead&gt;&quot;);
+foreach ($foo-&gt;row as $row) {
+	print(&quot;&lt;tr&gt;&quot;);
+	print(&quot;&lt;td&gt;&quot;.$foo-&gt;name.&quot;&lt;/td&gt;&quot;);
+	print(&quot;&lt;td&gt;&quot;.$foo-&gt;birthday.&quot;&lt;/td&gt;&quot;);
+	print(&quot;&lt;/tr&gt;&quot;);
+}
+print(&quot;&lt;/table&gt;&quot;);
+</pre></div>
+</p>
+<p>
+Obviously, you want to be able to set and retreive mvars, attributes and 
+children. You've already seen how to set data, and how to retrieve member
+variables, but what about attributes? What about convenience functions?
+What else can this object do?
+<ul>
+<li>get_attribute($attribname, $default = "") returns the value of the named
+attribute of the hdobj from which it is called, or the default value if that
+attribute isn't set.
+</li>
+<li>get_mvar_attrib($mvar, $attribname, $default = "") does the same for a
+member variable by the name of $mvar, on the hdobject from which it is called.
+</li>
+<li>create_child($name) creates a child for you -- no need to create another
+hdobj, and append it
+</li>
+<li>parse($xml) loads the object from an xml string
+</li>
+<li>has_attrib($name); has_mvar($name) both return whether or not the named
+item exists in the current object.
+</li>
+<li>child_count($childname = "") returns the number of children by the
+specified name, or the number of all immediate children to the object.
+</li>
+<li>set_mvars_from_array($array) sets a whole bunch of mvars from a hash-like
+array (what a timesaver!)
+</li>
+<li>list_childnames() / list_mvars() / list_attribs -- lists all names of objects children / mvars / attribs</li>
+<li>load_from_array($array, $attribnames = array()) loads the object from
+an array. The elements of the array may be other arrays -- which are then
+loaded in as child elements. Elements of any array which can be found
+by name in $attribnames are loaded as attributes on the relevant child
+or mvar, instead of being processes as mvars.<br>
+load_array_copy does the same as above, but copies the array first, meaning
+that you can specify the array definition in the function call
+</li>
+<li>del_mvar($name); del_mvar_attrib($mvar, $name); del_attrib($name); 
+del_child($name) -- deletes the specified item, if it exists</li>
+<li>get_child($name, $idx) -- returns a reference to the specified child, if
+it exists</li>
+<li>sort_children($cname,$keyname,$asc_or_desc="asc",$attrib_or_mvar="",$defval="") -- sorts
+children (named $cname) based on the values of mvar or attrib $keyname.
+$attrib_or_mvar can be the string "attrib" or "mvar" to explicitly set
+whether to sort by a named mvar or a named attribute -- or left blank to
+auto-detect. $asc_or_desc is the sort order ("asc" or "desc").
+$defval is the value to use when the attrib or mvar can't be
+found.
+</li>
+<li>mvar_to_attrib($name); attrib_to_mvar($name) -- promotion / demotion 
+(however you want to think of it) between attribute and mvar for a named
+item (if it exists)</li>
+<li>collapse_child($cname, $cindex) -- collapses the mvars and children of the
+specified child into this object</li>
+<li>append_xml($xml, $droproot = 1, $keep_root_attribs = 1) -- appends an xml
+document onto this hdobject. Nice for merging xml documents. $droproot
+determines whether or not the root element of the merged document is retained
+-- since it's more often useful to merge in everything contained within the
+root, but not the root itself, this option is defaulted on (and that's how
+the demo script shows the option off), but you can set it off (try, and see
+what happens in the demo). $keep_root_attribs determines whether or not the
+attributes of the dropped root node are to be merged in with the new parent
+node -- if so, only attributes that would not overwrite those of the new
+parent are merged in.</li>
+</ul>
+</p>
+<p>To get this object to dump out to XML, use the toXML() function, which can 
+take 2 boolean arguments:
+<ol>
+<li>whether to normalise (indent children and mvars appropriately) -- makes 
+the output more readable
+</li>
+<li>whether to make html safe for printing in an html document
+</li>
+</ol>
+Both are set to false by default.
+</p>
+<p>Lastly, the clear() method (surprisingly) clears the object's data. And
+the printout() method prints out the data in a format more like php's
+var_dump format. Don't try to var_dump on the object -- circular references
+abound due to the DOMIT usage, and you will just get a huge mess of text.
+<p>
+</div>
+<!-- >>> -->
+<p style="text-align:right">Author: Dave McColl, Fri Sep  9 13:53:30 SAST 2005
+</p>
+</body>
+</html>

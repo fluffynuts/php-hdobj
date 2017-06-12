@@ -1,0 +1,36 @@
+<template>
+	<form id="0">
+		<action id="0">
+			<name>action1</name>
+			<descr>Action number 1</descr>
+			<type>select</type>
+		</action>
+		<action id="1">
+			<name>action2</name>
+			<descr>Action number 2</descr>
+			<type>text</type>
+		</action>
+		<action id="2">
+			<name>action3</name>
+			<descr>Action number 3</descr>
+			<type>radio</type>
+		</action>
+		<action id="3">
+			<name>action4</name>
+			<descr>Action number 4</descr>
+			<type>select</type>
+		</action>
+	</form>
+	<form id="1">
+		<action id="4">
+			<name>action5</name>
+			<descr>Action number 5</descr>
+			<type>select</type>
+		</action>
+		<action id="5">
+			<name>action6</name>
+			<descr>Action number 6</descr>
+			<type>datepicker</type>
+		</action>
+	</form>
+</template>

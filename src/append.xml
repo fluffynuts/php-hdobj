@@ -1,0 +1,21 @@
+<append>
+	<form id="a0">
+		<action id="a0">
+			<name>append action0</name>
+			<descr>appended Action number 0</descr>
+			<type>select</type>
+		</action>
+		<action id="a1">
+			<name>append action1</name>
+			<descr>appended Action number 1</descr>
+			<type>text</type>
+		</action>
+	</form>
+	<form id="a1">
+		<action id="a3">
+			<name>append action3</name>
+			<descr>appended Action number 3</descr>
+			<type>foo</type>
+		</action>
+	</form>
+</append>
